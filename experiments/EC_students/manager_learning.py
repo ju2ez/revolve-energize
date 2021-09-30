@@ -56,7 +56,8 @@ class GenotypeConstructorConfig:
     brain_cppn_output_activation_type: multineat.ActivationFunction
 
 
-robot_path = "babyA.yaml"
+#robot_path = "babyA.yaml"
+robot_path = "babySchildi.yaml"
 
 def create_random_genotype(
     config: GenotypeConstructorConfig, id: int
@@ -81,8 +82,8 @@ async def run():
     """
 
     # experiment params #
-    num_generations = 10
-    population_size = 10
+    num_generations = 100
+    population_size = 20
     offspring_size = 5
 
     target_distance = 10

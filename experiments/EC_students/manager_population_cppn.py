@@ -85,7 +85,7 @@ async def run():
 
     # experiment params #
     num_generations = 100
-    population_size = 10
+    population_size = 20
     offspring_size = 5
 
     target_distance = 10

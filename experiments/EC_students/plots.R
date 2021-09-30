@@ -14,7 +14,7 @@ library(viridis)
 #### CHANGE THE PARAMETERS HERE ####
 
 base_directory <- c(
-  'data',  'data')
+  'data',  'test-brain-evolve')
 
 analysis = 'analysis'
 output_directory = paste(base_directory[2],'/',analysis ,sep='')
@@ -30,7 +30,6 @@ environments = list( c('plane')
 # methods are product of experiments_type VS environments and should be coupled with colors.
 # make sure to define methods_labels in alphabetic order, and experiments_type accordingly
 methods_labels = c( 
-  
   'evolution only' ,
   'evolution+learning'
 ) # note that labels of Plane death and Tilted death are INVERTED on purpose, to fix the mistake done when naming the experiments.
@@ -171,13 +170,14 @@ for (exp in 1:length(experiments_type))
   {
     for (env in 1:length(environments[[exp]]))
     { 
-      measures   = read.table(paste(base_directory[exp],experiments_type[exp], run,"all_measures.tsv", sep='/'),
-                              header = TRUE, fill=TRUE)
+      #measures   = read.table(paste(base_directory[exp],experiments_type[exp], run,"all_measures.tsv", sep='/'),
+      #                        header = TRUE, fill=TRUE)
       
-      for( m in 1:length(measures_names))
-      {
-        measures[measures_names[m]] = as.numeric(as.character(measures[[measures_names[m]]]))
-      }
+      
+      #for( m in 1:length(measures_names))
+      #{
+      #  measures[measures_names[m]] = as.numeric(as.character(measures[[measures_names[m]]]))
+      #}
       
       snapshots   = read.table(paste(base_directory[exp],experiments_type[exp], run,"snapshots_ids.tsv", sep='/'),
                                header = TRUE, fill=TRUE)
