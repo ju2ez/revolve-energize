@@ -275,7 +275,7 @@ def move_to_target_if_angle_is_correct(robot_manager: RobotManager, robot: Revol
     # introduce penalty here....
     for position in robot_manager._positions:
         # robot displacement
-        displacement: Tuple[float, float] = (pos_1[0] - pos_0[0], pos_1[1] - pos_0[1])
+        displacement: Tuple[float, float] = (target[0] - position[0], target[1] - position[1])
         displacement_length = math.sqrt(displacement[0] ** 2 + displacement[1] ** 2)
         if displacement_length > 0:
             _displacement_normalized = (
