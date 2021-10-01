@@ -14,13 +14,13 @@ library(viridis)
 #### CHANGE THE PARAMETERS HERE ####
 
 base_directory <- c(
-  'data',  'test-brain-evolve')
+  'data',  'data/test-brain-evolve')
 
 analysis = 'analysis'
 output_directory = paste(base_directory[2],'/',analysis ,sep='')
 
 experiments_type = c(  'lsys'
-                       
+
 )
 runs = list(
   c(1:1))
@@ -29,7 +29,8 @@ environments = list( c('plane')
 
 # methods are product of experiments_type VS environments and should be coupled with colors.
 # make sure to define methods_labels in alphabetic order, and experiments_type accordingly
-methods_labels = c( 
+methods_labels = c(
+
   'evolution only' ,
   'evolution+learning'
 ) # note that labels of Plane death and Tilted death are INVERTED on purpose, to fix the mistake done when naming the experiments.
@@ -42,11 +43,11 @@ experiments_type_colors = c(
   '#009900' #green
   # '#00BFFF', #deep skyblue
   # '#80DAEB'  #medium sky blue
-  
+
   #'#876044'  #brown
   # '#009900', #green
   # '#EE8610', #orange
-  # '#7550ff', #purple 
+  # '#7550ff', #purple
 )
 
 ribbon_colors = c(
@@ -142,7 +143,7 @@ measures_labels = c(
 #'   'novelty_pop',
 #'   #'cons_fitness'
 #' )
-#' 
+#'
 #' more_measures_labels = c(
 #'   #'Novelty (+archive)',
 #'   'Novelty',
@@ -169,15 +170,14 @@ for (exp in 1:length(experiments_type))
   for(run in runs[[exp]])
   {
     for (env in 1:length(environments[[exp]]))
-    { 
-      #measures   = read.table(paste(base_directory[exp],experiments_type[exp], run,"all_measures.tsv", sep='/'),
-      #                        header = TRUE, fill=TRUE)
-      
-      
-      #for( m in 1:length(measures_names))
-      #{
-      #  measures[measures_names[m]] = as.numeric(as.character(measures[[measures_names[m]]]))
-      #}
+    {
+      measures   = read.table(paste(base_directory[exp],experiments_type[exp], run,"all_measures.tsv", sep='/'),
+                              header = TRUE, fill=TRUE)
+
+      for( m in 1:length(measures_names))
+      {
+        measures[measures_names[m]] = as.numeric(as.character(measures[[measures_names[m]]]))
+      }
       
       snapshots   = read.table(paste(base_directory[exp],experiments_type[exp], run,"snapshots_ids.tsv", sep='/'),
                                header = TRUE, fill=TRUE)
@@ -208,12 +208,13 @@ measures_snapshots_all = sqldf("select * from measures_snapshots_all where fitne
 file_name=paste(base_directory[exp],"summary_2.csv",sep = '/')
 write.csv(measures_snapshots_all,file_name)
 
-# measures_names = c(measures_names, more_measures_names)
-# measures_labels = c(measures_labels, more_measures_labels)
 
-# for( m in 1:length(more_measures_names)){
-#   measures_snapshots_all[more_measures_names[m]] = as.numeric(as.character(measures_snapshots_all[[more_measures_names[m]]]))
-# }
+ measures_names = c(measures_names, more_measures_names)
+ measures_labels = c(measures_labels, more_measures_labels)
+
+ for( m in 1:length(more_measures_names)){
+   measures_snapshots_all[more_measures_names[m]] = as.numeric(as.character(measures_snapshots_all[[more_measures_names[m]]]))
+ }
 
 
 measures_averages_gens_1 = list()
