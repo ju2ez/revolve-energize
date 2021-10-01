@@ -6,6 +6,7 @@ import multineat
 from pyrevolve import parser
 from pyrevolve.custom_logging.logger import logger
 from pyrevolve.evolution.fitness import follow_line as fitness_follow_line
+from pyrevolve.evolution.fitness import move_to_target_if_angle_is_correct as move_to_target
 from pyrevolve.evolution.population.population import Population
 from pyrevolve.evolution.population.population_config import PopulationConfig
 from pyrevolve.evolution.population.population_management import (
@@ -84,9 +85,9 @@ async def run():
     """
 
     # experiment params #
-    num_generations = 22
-    population_size = 11
-    offspring_size = 5
+    num_generations = 100
+    population_size = 100
+    offspring_size = 50
 
     target_distance = 10
 
@@ -171,7 +172,7 @@ async def run():
         population_size=population_size,
         genotype_constructor=create_random_genotype,
         genotype_conf=genotype_constructor_config,
-        fitness_function=fitness_follow_line,
+        fitness_function=move_to_target,
         mutation_operator=bodybrain_composition_mutate,
         mutation_conf=bodybrain_composition_config,
         crossover_operator=bodybrain_composition_crossover,
