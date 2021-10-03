@@ -244,61 +244,31 @@ def move_to_target_if_angle_is_correct(robot_manager: RobotManager, robot: Revol
 
     # robot displacement
     displacement: Tuple[float, float] = (pos_1[0] - pos_0[0], pos_1[1] - pos_0[1])
-    displacement_length = math.sqrt(displacement[0] ** 2 + displacement[1] ** 2)
-    if displacement_length > 0:
-        displacement_normalized = (
-            displacement[0] / displacement_length,
-            displacement[1] / displacement_length,
-        )
-    else:
-        displacement_normalized = (0, 0)
 
     # steal target from brain
     # is already normalized
     target = robot._brain.target
     target_length = math.sqrt(target[0] ** 2 + target[1] ** 2)
     target_normalized = (target[0] / target_length, target[1] / target_length)
-
-    # angle between target and actual direction
-    delta = math.acos(
-        min(  # bound to account for small float errors. acos crashes on 1.0000000001
-            1.0,
-            max(
-                -1,
-                target_normalized[0] * displacement_normalized[0]
-                + target_normalized[1] * displacement_normalized[1],
-            ),
-        )
-    )
     
-    overall_angle_penalty = 0
+    overall_angle_fitness = 0
     # introduce penalty here....
-    for position in robot_manager._positions:
-        # robot displacement
-        displacement: Tuple[float, float] = (target[0] - position[0], target[1] - position[1])
-        displacement_length = math.sqrt(displacement[0] ** 2 + displacement[1] ** 2)
-        if displacement_length > 0:
-            _displacement_normalized = (
-                displacement[0] / displacement_length,
-                displacement[1] / displacement_length,
-            )
-        else:
-            _displacement_normalized = (0, 0)
+    for orientation_vector in robot_manager._orientation_vecs:
 
-
-        
         _delta = math.acos(
-        min(  # bound to account for small float errors. acos crashes on 1.0000000001
-            1.0,
-            max(
-                -1,
-                target_normalized[0] * _displacement_normalized[0]
-                + target_normalized[1] * _displacement_normalized[1],
-            ),
-        )
+            min(  # bound to account for small float errors. acos crashes on 1.0000000001
+                1.0,
+                max(
+                    -1,
+                    target_normalized[0] * orientation_vector[Orientation.FORWARD][0]
+                    + target_normalized[1] * orientation_vector[Orientation.FORWARD][1],
+                ),
+            )
         )
 
-        overall_angle_penalty = abs(_delta)
+        overall_angle_fitness += math.pi - _delta
+
+    average_angle_fitness = overall_angle_fitness / len(robot_manager._orientation_vecs)
 
 
     # projection of displacement on target line
@@ -306,30 +276,10 @@ def move_to_target_if_angle_is_correct(robot_manager: RobotManager, robot: Revol
         displacement[0] * target_normalized[0] + displacement[1] * target_normalized[1]
     )
 
-    # distance from displacement to target line
-    dist_to_optimal_line: float = math.sqrt(
-        (dist_in_right_direction * target_normalized[0] - displacement[0]) ** 2
-        + (dist_in_right_direction * target_normalized[1] - displacement[1]) ** 2
-    )
+    logger.info(f"Distance = {dist_in_right_direction}")
+    logger.info(f"Angle = {average_angle_fitness}")
 
-    logger.info(
-        f"target: {target}, displacement: {displacement}, dist_in_right_direction: {dist_in_right_direction}, dist_to_optimal_line: {dist_to_optimal_line}, delta: {delta}, path_length: {path_length}"
-    )
-
-    # filter out passive blocks
-    if dist_in_right_direction < 0.01:
-        fitness = 0
-        logger.info(f"Did not pass fitness test, fitness = {fitness}")
-    else:
-        fitness = (dist_in_right_direction / (epsilon + path_length)) * (
-            dist_in_right_direction / (delta + 1)
-            - penalty_factor * dist_to_optimal_line
-        )
-
-        logger.info(f"Fitness = {fitness}")
-
-    final_distance_to_target = abs(target[0] - displacement[0]) + abs(target[1] - displacement[1])
-    fitness = fitness - 0.1*overall_angle_penalty - 0.0001*final_distance_to_target
+    fitness = 0.01*average_angle_fitness + dist_in_right_direction
     logger.info(f"Overall Fitness = {fitness}")
     return fitness
 
