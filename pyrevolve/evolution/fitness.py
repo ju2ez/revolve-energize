@@ -298,8 +298,9 @@ def move_to_target_if_angle_is_correct(robot_manager: RobotManager, robot: Revol
         )
         )
 
-        overall_angle_penalty = abs(_delta)
+        overall_angle_penalty += abs(_delta)
 
+    logger.info(f"Angle Penalty: {overall_angle_penalty}")
 
     # projection of displacement on target line
     dist_in_right_direction: float = (
