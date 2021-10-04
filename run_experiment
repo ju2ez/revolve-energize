@@ -3,8 +3,8 @@
  
 while true
 	do
-         for i in {1..10}; do
-                ./revolve.py --experiment-name exp-julian-3 --run $i --manager experiments/EC_students/manager_population_cppn --n-cores 4 --port-start 11000  --evaluation-time 99;
+         for i in {1..2}; do
+                ./revolve.py --experiment-name greater-exp --run $i --manager experiments/EC_students/manager_population_cppn --n-cores 4 --port-start 11000  --evaluation-time 111;
                 sleep 5s
 	   done
 done
