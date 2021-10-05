@@ -3,7 +3,7 @@ import os
 # set these variables according to your experiments #
 dirpath = 'data'
 experiments_type = [
-    'lsys'
+    'tournament-changed-follow-line'
 ]
 runs = 1
 

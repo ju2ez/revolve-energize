@@ -14,12 +14,12 @@ library(viridis)
 #### CHANGE THE PARAMETERS HERE ####
 
 base_directory <- c(
-  'data',  'data/test-brain-evolve')
+  'data',  'data')
 
 analysis = 'analysis'
 output_directory = paste(base_directory[2],'/',analysis ,sep='')
 
-experiments_type = c(  'lsys'
+experiments_type = c(  'tournament-changed-follow-line'
 
 )
 runs = list(
@@ -136,8 +136,7 @@ measures_labels = c(
   'fitness',
   'fitness before learning'
 )
-
-
+#'
 #' more_measures_names = c(
 #'   # 'novelty',
 #'   'novelty_pop',
@@ -149,6 +148,7 @@ measures_labels = c(
 #'   'Novelty',
 #'   #'Number of slaves'
 #' )
+
 
 #### CHANGE THE PARAMETERS HERE ####
 
@@ -209,12 +209,12 @@ file_name=paste(base_directory[exp],"summary_2.csv",sep = '/')
 write.csv(measures_snapshots_all,file_name)
 
 
- measures_names = c(measures_names, more_measures_names)
- measures_labels = c(measures_labels, more_measures_labels)
+#' measures_names = c(measures_names)   #' more_measures_names)
+#' more_measures_names = c(more_measures_names) measures_labels = c(measures_labels) #', more_measures_labels)
 
- for( m in 1:length(more_measures_names)){
-   measures_snapshots_all[more_measures_names[m]] = as.numeric(as.character(measures_snapshots_all[[more_measures_names[m]]]))
- }
+#' for( m in 1:length(more_measures_names)){
+#'   measures_snapshots_all[more_measures_names[m]] = as.numeric(as.character(measures_snapshots_all[[more_measures_names[m]]]))
+#' }
 
 
 measures_averages_gens_1 = list()

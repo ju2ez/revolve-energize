@@ -13,7 +13,7 @@ from pyrevolve.revolve_bot import RevolveBot
 from pyrevolve.SDF.math import Vector3
 from pyrevolve.tol.manage import World
 from pyrevolve.util.supervisor.supervisor_multi import DynamicSimSupervisor
-
+from pyrevolve.evolution.fitness import test_fitness as test_fitness 
 
 async def run():
     log = logger.create_logger(
@@ -51,7 +51,7 @@ async def run():
     # initialization finished
 
     # load robot file
-    path = "experiments/EC_students/data/greater-exp/1/data_fullevolution/phenotypes/phenotype_184.yaml"
+    path = "experiments/EC_students/data/greater-exp/2/data_fullevolution/phenotypes/phenotype_243.yaml"
     robot = RevolveBot(_id=settings.test_robot)
     robot.load_file(path, conf_type="yaml")
     robot.update_substrate()
@@ -63,6 +63,7 @@ async def run():
         0,
     )
     robot._brain.target = target_as_vector
+    robot._brain.target = (10.,20., 0.)
 
     robot.save_file(f"{path}.sdf", conf_type="sdf")
 
@@ -76,10 +77,13 @@ async def run():
     while True:
         # Print robot fitness every second
         status = "dead" if robot_manager.dead else "alive"
+        position = robot_manager._positions[-1]
         print(
             f"Robot fitness ({status}) is \n"
             f" OLD:     {fitness.online_old_revolve(robot_manager)}\n"
             f" DISPLAC: {fitness.displacement(robot_manager, robot)}\n"
-            f" DIS_VEL: {fitness.displacement_velocity(robot_manager, robot)}"
+            f" DIS_VEL: {fitness.displacement_velocity(robot_manager, robot)}\n"
+            f" Test Fitness: {test_fitness(robot_manager, robot)}\n",
+            f" Robot Position: {position}"
         )
         await asyncio.sleep(1.0)

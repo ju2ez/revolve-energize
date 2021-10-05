@@ -173,7 +173,7 @@ async def run():
         population_size=population_size,
         genotype_constructor=create_random_genotype,
         genotype_conf=genotype_constructor_config,
-        fitness_function=test_fitness,
+        fitness_function=fitness_follow_line,
         mutation_operator=bodybrain_composition_mutate,
         mutation_conf=bodybrain_composition_config,
         crossover_operator=bodybrain_composition_crossover,
