@@ -279,7 +279,7 @@ def move_to_target_if_angle_is_correct(robot_manager: RobotManager, robot: Revol
     logger.info(f"Distance = {dist_in_right_direction}")
     logger.info(f"Angle = {average_angle_fitness}")
 
-    fitness = 0.01*average_angle_fitness + dist_in_right_direction
+    fitness = 0.1*average_angle_fitness + dist_in_right_direction
     logger.info(f"Overall Fitness = {fitness}")
     return fitness
 
