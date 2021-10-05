@@ -208,41 +208,10 @@ def _get_angle(position_1, position_2) -> float:
 
 
 def move_to_target_if_angle_is_correct(robot_manager: RobotManager, robot: RevolveBot) -> float:
-    """
-    Based on Emiels master thesis and adjusted with a couple of ideas.
-
-    Idea:
-
-    State 1 -> reduce angle to the target position (+- 10 degrees)
-
-    State 2 -> move to the target and stop when arrived  
-
-    Thus fitness is determined by the formula:
-
-    F = e3 * (e1 / (delta + 1) - penalty_factor * e2) - penalty_weight * e4
-
-    Where e1 is the distance travelled in the right direction,
-    e2 is the distance of the final position p1 from the ideal
-    trajectory starting at starting position p0 and following
-    the target direction. e3 is distance in right direction divided by
-    length of traveled path(curved) + infinitesimal constant to never divide
-    by zero.
-    delta is angle between optimal direction and traveled direction.
-    e4 is the absolute distance to the target. 
-
-    """
-    penalty_factor = 0.01
-
-    epsilon: float = sys.float_info.epsilon
-
-    # length of traveled path(over the complete curve)
-    path_length = measures.path_length(robot_manager)  # L
 
     # robot position, Vector3(pos.x, pos.y, pos.z)
     pos_0 = robot_manager._positions[0]  # start
     pos_1 = robot_manager._positions[-1]  # end
-
-    fitness = 0
 
     # robot displacement
     displacement: Tuple[float, float] = (pos_1[0] - pos_0[0], pos_1[1] - pos_0[1])
@@ -271,8 +240,6 @@ def move_to_target_if_angle_is_correct(robot_manager: RobotManager, robot: Revol
 
     average_angle_fitness = overall_angle_fitness / len(robot_manager._orientation_vecs)
 
-    logger.info(f"Angle Penalty: {overall_angle_penalty}")
-
     # projection of displacement on target line
     dist_in_right_direction: float = (
             displacement[0] * target_normalized[0] + displacement[1] * target_normalized[1]
@@ -282,6 +249,36 @@ def move_to_target_if_angle_is_correct(robot_manager: RobotManager, robot: Revol
 
     fitness = 0.1*average_angle_fitness + dist_in_right_direction
     logger.info(f"Overall Fitness = {fitness}")
+    logger.info(f"Location0 = {pos_1}")
+    logger.info(f"Location1 = {pos_1}")
+    return fitness
+
+
+def rotate_towards_target(robot_manager: RobotManager, robot: RevolveBot) -> float:
+    # steal target from brain
+    target = robot._brain.target
+    target_length = math.sqrt(target[0] ** 2 + target[1] ** 2)
+    target_normalized = (target[0] / target_length, target[1] / target_length)
+
+    overall_angle_fitness = 0
+    i = 0
+    for orientation_vector in robot_manager._orientation_vecs:
+        _delta = math.acos(
+            min(  # bound to account for small float errors. acos crashes on 1.0000000001
+                1.0,
+                max(
+                    -1,
+                    target_normalized[0] * orientation_vector[Orientation.FORWARD][0]
+                    + target_normalized[1] * orientation_vector[Orientation.FORWARD][1],
+                ),
+            )
+        )
+        overall_angle_fitness += (i / len(robot_manager._orientation_vecs)) * math.pi - _delta
+        i += 1
+
+    average_angle_fitness = overall_angle_fitness / len(robot_manager._orientation_vecs)
+
+    fitness = average_angle_fitness
     return fitness
 
 

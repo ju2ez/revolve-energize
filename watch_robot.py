@@ -51,15 +51,15 @@ async def run():
     # initialization finished
 
     # load robot file
-    path = "experiments/EC_students/data/greater-exp/1/data_fullevolution/phenotypes/phenotype_184.yaml"
+    path = "experiments/EC_students/data/ege-exp/1/data_fullevolution/phenotypes/phenotype_3611.yaml"
     robot = RevolveBot(_id=settings.test_robot)
     robot.load_file(path, conf_type="yaml")
     robot.update_substrate()
 
     target_direction = 240 / 360 * 2 * math.pi
     target_as_vector = (
-        math.cos(target_direction),
-        math.sin(target_direction),
+        10,
+        0,
         0,
     )
     robot._brain.target = target_as_vector
@@ -80,6 +80,7 @@ async def run():
             f"Robot fitness ({status}) is \n"
             f" OLD:     {fitness.online_old_revolve(robot_manager)}\n"
             f" DISPLAC: {fitness.displacement(robot_manager, robot)}\n"
-            f" DIS_VEL: {fitness.displacement_velocity(robot_manager, robot)}"
+            f" DIS_VEL: {fitness.displacement_velocity(robot_manager, robot)}\n"
+            f" OUR_FITNESS: {fitness.move_to_target_if_angle_is_correct(robot_manager, robot)}"
         )
         await asyncio.sleep(1.0)
