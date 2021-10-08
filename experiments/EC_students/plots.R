@@ -19,7 +19,7 @@ base_directory <- c(
 analysis = 'analysis'
 output_directory = paste(base_directory[2],'/',analysis ,sep='')
 
-experiments_type = c(  'tournament-changed-follow-line'
+experiments_type = c(  'serious_exp'
 
 )
 runs = list(

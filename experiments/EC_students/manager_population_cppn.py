@@ -8,6 +8,7 @@ from pyrevolve.custom_logging.logger import logger
 from pyrevolve.evolution.fitness import follow_line as fitness_follow_line
 from pyrevolve.evolution.fitness import move_to_target_if_angle_is_correct as move_to_target
 from pyrevolve.evolution.fitness import test_fitness as test_fitness
+from pyrevolve.evolution.fitness import follow_line_and_stop as follow_line_and_stop
 from pyrevolve.evolution.population.population import Population
 from pyrevolve.evolution.population.population_config import PopulationConfig
 from pyrevolve.evolution.population.population_management import (
@@ -173,7 +174,7 @@ async def run():
         population_size=population_size,
         genotype_constructor=create_random_genotype,
         genotype_conf=genotype_constructor_config,
-        fitness_function=fitness_follow_line,
+        fitness_function=follow_line_and_stop,
         mutation_operator=bodybrain_composition_mutate,
         mutation_conf=bodybrain_composition_config,
         crossover_operator=bodybrain_composition_crossover,
