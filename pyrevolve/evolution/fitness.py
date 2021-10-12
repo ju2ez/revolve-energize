@@ -126,7 +126,7 @@ def rotation(
             delta_orientations = angle_i - angle_i_1
         orientations += delta_orientations
 
-    fitness_value: float = orientations
+    fitness_value: float = abs(orientations)
     return fitness_value
 
 
