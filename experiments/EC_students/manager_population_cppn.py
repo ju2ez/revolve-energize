@@ -179,9 +179,9 @@ async def run():
         mutation_conf=bodybrain_composition_config,
         crossover_operator=bodybrain_composition_crossover,
         crossover_conf=bodybrain_composition_config,
-        selection=lambda individuals: tournament_selection(individuals, 2),
+        selection=lambda individuals: tournament_selection(individuals, 22),
         parent_selection=lambda individuals: multiple_selection(
-            individuals, 2, tournament_selection
+            individuals, 22, tournament_selection
         ),
         population_management=steady_state_population_management,
         population_management_selector=tournament_selection,

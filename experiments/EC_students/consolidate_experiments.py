@@ -3,9 +3,9 @@ import os
 # set these variables according to your experiments #
 dirpath = 'data'
 experiments_type = [
-    'serious_exp'
+    'follow_line_and_stop_1'
 ]
-runs = 1
+runs = 20
 
 
 # set these variables according to your experiments #
