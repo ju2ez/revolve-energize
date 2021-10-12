@@ -19,7 +19,7 @@ class Individual:
         """
         self.genotype: Genotype = genotype
         self.phenotype: Union[RevolveBot, List[RevolveBot]] = phenotype
-        self.fitness: Optional[float] = None
+        self.fitness: Optional[(float, float)] = None
         self.parents: Optional[List[Individual]] = None
         self.objectives = []
 

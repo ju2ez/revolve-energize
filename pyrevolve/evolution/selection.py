@@ -1,5 +1,6 @@
 from __future__ import annotations
 from random import randint
+from pyrevolve.custom_logging.logger import logger
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -11,8 +12,8 @@ _neg_inf = -float('Inf')
 
 
 def _compare_maj_fitness(indiv_1, indiv_2):
-    fit_1 = _neg_inf if indiv_1.fitness is None else indiv_1.fitness
-    fit_2 = _neg_inf if indiv_2.fitness is None else indiv_2.fitness
+    fit_1 = (_neg_inf, _neg_inf) if indiv_1.fitness is None else indiv_1.fitness
+    fit_2 = (_neg_inf, _neg_inf) if indiv_2.fitness is None else indiv_2.fitness
     return fit_1 > fit_2
 
 

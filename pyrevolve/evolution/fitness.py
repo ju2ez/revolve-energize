@@ -126,7 +126,7 @@ def rotation(
             delta_orientations = angle_i - angle_i_1
         orientations += delta_orientations
 
-    fitness_value: float = orientations - factor_orien_ds * robot_manager._dist
+    fitness_value: float = orientations
     return fitness_value
 
 
@@ -196,17 +196,6 @@ def panoramic_rotation(
     return total_angle
 
 
-def _get_angle(position_1, position_2) -> float:
-    """
-    position_1 array of the robot [0]->x [1]->y
-    position_1 array of the target [0]->x [1]->y
-
-    """
-    # TODO create this function
-
-    pass
-
-
 def move_to_target_if_angle_is_correct(robot_manager: RobotManager, robot: RevolveBot) -> float:
 
     # robot position, Vector3(pos.x, pos.y, pos.z)
@@ -221,7 +210,7 @@ def move_to_target_if_angle_is_correct(robot_manager: RobotManager, robot: Revol
     target = robot._brain.target
     target_length = math.sqrt(target[0] ** 2 + target[1] ** 2)
     target_normalized = (target[0] / target_length, target[1] / target_length)
-    
+
     overall_angle_fitness = 0
     # introduce penalty here....
     for orientation_vector in robot_manager._orientation_vecs:
@@ -480,3 +469,7 @@ def follow_line(robot_manager: RobotManager, robot: RevolveBot) -> float:
         logger.info(f"Fitness = {fitness}")
 
     return fitness
+
+
+def two_fitnesses(robot_manager: RobotManager, robot: RevolveBot) -> (float, float):
+    return rotation(robot_manager, robot), follow_line(robot_manager, robot)

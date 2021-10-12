@@ -3,16 +3,19 @@ import math
 from dataclasses import dataclass
 
 import multineat
+
+from experiments.EC_students.nsga2 import NSGA2
 from pyrevolve import parser
 from pyrevolve.custom_logging.logger import logger
 from pyrevolve.evolution.fitness import follow_line as fitness_follow_line
 from pyrevolve.evolution.fitness import move_to_target_if_angle_is_correct as move_to_target
 from pyrevolve.evolution.fitness import rotate_towards_target as rotate_fitness
 from pyrevolve.evolution.fitness import test_fitness as test_fitness
+from pyrevolve.evolution.fitness import two_fitnesses as two_fitnesses
 from pyrevolve.evolution.population.population import Population
 from pyrevolve.evolution.population.population_config import PopulationConfig
 from pyrevolve.evolution.population.population_management import (
-    steady_state_population_management,
+    steady_state_population_management, generational_population_management,
 )
 from pyrevolve.evolution.selection import multiple_selection, tournament_selection
 from pyrevolve.experiment_management import ExperimentManagement
@@ -174,17 +177,17 @@ async def run():
         population_size=population_size,
         genotype_constructor=create_random_genotype,
         genotype_conf=genotype_constructor_config,
-        fitness_function=rotate_fitness,
+        fitness_function=two_fitnesses,
         mutation_operator=bodybrain_composition_mutate,
         mutation_conf=bodybrain_composition_config,
         crossover_operator=bodybrain_composition_crossover,
         crossover_conf=bodybrain_composition_config,
-        selection=lambda individuals: tournament_selection(individuals, 2),
+        selection=None,
         parent_selection=lambda individuals: multiple_selection(
             individuals, 2, tournament_selection
         ),
-        population_management=steady_state_population_management,
-        population_management_selector=tournament_selection,
+        population_management=NSGA2,
+        population_management_selector=None,
         evaluation_time=settings.evaluation_time,
         offspring_size=offspring_size,
         experiment_name=settings.experiment_name,

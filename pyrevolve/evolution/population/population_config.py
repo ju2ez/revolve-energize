@@ -19,7 +19,7 @@ class PopulationConfig:
                  mutation_conf: object,
                  crossover_operator: Callable[[List[Individual], object, object], Genotype],
                  crossover_conf: object,
-                 selection: Callable[[List[Individual]], Individual],
+                 selection: Optional[Callable[[List[Individual]], Individual]],
                  parent_selection: Callable[[List[Individual]], List[Individual]],
                  population_management: Callable[
                      [List[Individual], List[Individual], Callable[[List[Individual]], Individual]],
