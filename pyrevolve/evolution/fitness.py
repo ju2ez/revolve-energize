@@ -244,13 +244,10 @@ def move_to_target_if_angle_is_correct(robot_manager: RobotManager, robot: Revol
     dist_in_right_direction: float = (
             displacement[0] * target_normalized[0] + displacement[1] * target_normalized[1]
     )
-    logger.info(f"Distance = {dist_in_right_direction}")
     logger.info(f"Angle = {average_angle_fitness}")
 
     fitness = 0.1*average_angle_fitness + dist_in_right_direction
     logger.info(f"Overall Fitness = {fitness}")
-    logger.info(f"Location0 = {pos_1}")
-    logger.info(f"Location1 = {pos_1}")
     return fitness
 
 
@@ -260,25 +257,19 @@ def rotate_towards_target(robot_manager: RobotManager, robot: RevolveBot) -> flo
     target_length = math.sqrt(target[0] ** 2 + target[1] ** 2)
     target_normalized = (target[0] / target_length, target[1] / target_length)
 
-    overall_angle_fitness = 0
-    i = 0
-    for orientation_vector in robot_manager._orientation_vecs:
-        _delta = math.acos(
-            min(  # bound to account for small float errors. acos crashes on 1.0000000001
-                1.0,
-                max(
-                    -1,
-                    target_normalized[0] * orientation_vector[Orientation.FORWARD][0]
-                    + target_normalized[1] * orientation_vector[Orientation.FORWARD][1],
-                ),
-            )
+    _delta = math.acos(
+        min(  # bound to account for small float errors. acos crashes on 1.0000000001
+            1.0,
+            max(
+                -1,
+                target_normalized[0] * robot_manager._orientation_vecs[-1][Orientation.FORWARD][0]
+                + target_normalized[1] * robot_manager._orientation_vecs[-1][Orientation.FORWARD][1],
+            ),
         )
-        overall_angle_fitness += (i / len(robot_manager._orientation_vecs)) * math.pi - _delta
-        i += 1
+    )
 
-    average_angle_fitness = overall_angle_fitness / len(robot_manager._orientation_vecs)
-
-    fitness = average_angle_fitness
+    fitness = (math.pi - _delta)
+    logger.info(f"FITNESS = {fitness}")
     return fitness
 
 
