@@ -9,6 +9,7 @@ from pyrevolve.evolution.fitness import follow_line as fitness_follow_line
 from pyrevolve.evolution.fitness import move_to_target_if_angle_is_correct as move_to_target
 from pyrevolve.evolution.fitness import test_fitness as test_fitness
 from pyrevolve.evolution.fitness import follow_line_and_stop as follow_line_and_stop
+from pyrevolve.evolution.fitness import rotation as rotation
 from pyrevolve.evolution.population.population import Population
 from pyrevolve.evolution.population.population_config import PopulationConfig
 from pyrevolve.evolution.population.population_management import (
@@ -45,6 +46,8 @@ from pyrevolve.genotype.cppnneat.brain.mutation import mutate as cppnneat_brain_
 from pyrevolve.genotype.cppnneat.config import get_default_multineat_params
 from pyrevolve.util.supervisor.analyzer_queue import AnalyzerQueue
 from pyrevolve.util.supervisor.simulator_queue import SimulatorQueue
+
+from .nsga2 import NSGA2
 
 
 @dataclass
@@ -87,7 +90,7 @@ async def run():
     """
 
     # experiment params #
-    num_generations = 100
+    num_generations = 200
     population_size = 100
     offspring_size = 50
 
@@ -105,6 +108,9 @@ async def run():
     # multineat rng
     rng = multineat.RNG()
     rng.TimeSeed()
+
+
+    objective_functions = [rotation, fitness_follow_line]
 
     # multineat innovation databases
     innov_db_body = multineat.InnovationDatabase()
@@ -174,7 +180,8 @@ async def run():
         population_size=population_size,
         genotype_constructor=create_random_genotype,
         genotype_conf=genotype_constructor_config,
-        fitness_function=follow_line_and_stop,
+        fitness_function=None,
+        objective_functions=objective_functions,
         mutation_operator=bodybrain_composition_mutate,
         mutation_conf=bodybrain_composition_config,
         crossover_operator=bodybrain_composition_crossover,
@@ -183,8 +190,8 @@ async def run():
         parent_selection=lambda individuals: multiple_selection(
             individuals, 2, tournament_selection
         ),
-        population_management=steady_state_population_management,
-        population_management_selector=tournament_selection,
+        population_management=lambda pop, offsprings: NSGA2(pop, offsprings, debug=True),
+        population_management_selector=None,
         evaluation_time=settings.evaluation_time,
         offspring_size=offspring_size,
         experiment_name=settings.experiment_name,
@@ -199,7 +206,7 @@ async def run():
 
     # print some info about the experiment and recovery
     logger.info(
-        "Activated run " + settings.run + " of experiment " + settings.experiment_name
+        "Activated un " + settings.run + " of experiment " + settings.experiment_name
     )
     if settings.recovery_enabled:
         if experiment_management.experiment_is_new():
