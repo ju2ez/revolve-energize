@@ -422,15 +422,21 @@ class ExperimentManagement:
         if fitness is None:
             with open(self._fitness_file_path, 'r') as fitness_file:
                 for line in fitness_file:
+                    line = line.replace('(','').replace(')','')
                     line_split = line.split(',')
                     line_id = line_split[0]
                     line_fitness = line_split[1:]  # type List[str]
-                    if line_id == _id:
+                    
+                    if int(line_id) == _id:
                         objectives = [None if line_fitness_v.startswith('None') else float(line_fitness_v) for line_fitness_v in line_fitness]
                         if len(line_fitness) == 1:
                             fitness = objectives[0]
                             objectives = None
+                        elif len(line_fitness) == 2:
+                            fitness = (objectives[0], objectives[1])
+                            objectives = None
                         break
+                    
                 else:
                     fitness = None
                     objectives = None

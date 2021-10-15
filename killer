@@ -3,6 +3,6 @@ while true
     do
         kill $( ps aux | grep 'gzserver' | awk '{print $2}');
         kill $( ps aux | grep 'revolve.py' | awk '{print $2}' );
-        sleep 900s
+        sleep 1200s
         echo "killed once again"
     done
