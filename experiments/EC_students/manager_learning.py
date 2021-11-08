@@ -6,6 +6,8 @@ import multineat
 from pyrevolve import parser
 from pyrevolve.custom_logging.logger import logger
 from pyrevolve.evolution.fitness import follow_line as fitness_follow_line
+from pyrevolve.evolution.fitness import rotation as rotation
+from pyrevolve.evolution.fitness import follow_line_no_rotation as follow_line_no_rotation
 from pyrevolve.evolution.population.population import Population
 from pyrevolve.evolution.population.population_config import PopulationConfig
 from pyrevolve.evolution.population.population_management import (
@@ -57,7 +59,7 @@ class GenotypeConstructorConfig:
 
 
 #robot_path = "babyA.yaml"
-robot_path = "babySchildi.yaml"
+robot_path = "phenotype_4798.yaml"
 
 def create_random_genotype(
     config: GenotypeConstructorConfig, id: int
@@ -82,9 +84,9 @@ async def run():
     """
 
     # experiment params #
-    num_generations = 44
-    population_size = 11
-    offspring_size = 5
+    num_generations = 500
+    population_size = 111
+    offspring_size = 77
 
     target_distance = 10
 
@@ -160,7 +162,7 @@ async def run():
         population_size=population_size,
         genotype_constructor=create_random_genotype,
         genotype_conf=genotype_constructor_config,
-        fitness_function=fitness_follow_line,
+        fitness_function=follow_line_no_rotation,
         mutation_operator=bodybrain_composition_mutate,
         mutation_conf=bodybrain_composition_config,
         crossover_operator=bodybrain_composition_crossover,

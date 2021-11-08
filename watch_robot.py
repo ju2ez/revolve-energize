@@ -51,7 +51,7 @@ async def run():
     # initialization finished
 
     # load robot file
-    path = "experiments/EC_students/data/greater-exp/2/data_fullevolution/phenotypes/phenotype_243.yaml"
+    path = "experiments/EC_students/data/nsga2_exp_abs_rot_4/4/data_fullevolution/phenotypes/phenotype_12454.yaml"
     robot = RevolveBot(_id=settings.test_robot)
     robot.load_file(path, conf_type="yaml")
     robot.update_substrate()
@@ -63,13 +63,14 @@ async def run():
         0,
     )
     robot._brain.target = target_as_vector
-    robot._brain.target = (10.,20., 0.)
+
+    robot._brain.target = (0.0 ,10.0 , 0.0)
 
     robot.save_file(f"{path}.sdf", conf_type="sdf")
 
     # insert robot into the simulator
     robot_manager = await connection.insert_robot(
-        robot, Vector3(0, 0, 0.25), life_timeout=None
+        robot, Vector3(1, 0, 0.25), life_timeout=None
     )
     await asyncio.sleep(1.0)
 

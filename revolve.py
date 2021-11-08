@@ -13,7 +13,6 @@ here = os.path.dirname(os.path.abspath(__file__))
 rvpath = os.path.abspath(os.path.join(here, '..', 'revolve'))
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-
 def run(loop, arguments):
     if arguments.test_robot is not None:
         return loop.run_until_complete(test_robot_run(arguments.test_robot))

@@ -3,6 +3,7 @@ import math
 # belong to TODO
 import fnmatch
 from ..brain.brain_nn import BrainNN
+from ..brain.cpg_target import BrainCPGTarget
 from ...custom_logging.logger import logger
 
 

@@ -229,9 +229,9 @@ class Population:
 
         return new_population
 
-    async def _evaluate_objectives(
-        self, new_individuals: List[Individual], gen_num: int
-    ) -> None:
+    async def _evaluate_objectives(self,
+                                   new_individuals: List[Individual],
+                                   gen_num: int) -> None:
         """
         Evaluates each individual in the new gen population for each objective
         :param new_individuals: newly created population after an evolution iteration
@@ -243,16 +243,63 @@ class Population:
         robot_futures = []
         for individual in new_individuals:
             individual.develop()
+            individual.objectives = [-math.inf for _ in range(len(self.config.objective_functions))]
+
+            assert len(individual.phenotype) == len(self.config.objective_functions)
+            for objective, robot in enumerate(individual.phenotype):
+                logger.info(f'Evaluating individual (gen {gen_num} - objective {objective}) {robot.id}')
+                objective_fun = self.config.objective_functions[objective]
+                future = asyncio.ensure_future(
+                    self.evaluate_single_robot(individual=individual, fitness_fun=objective_fun, phenotype=robot))
+                robot_futures.append((individual, robot, objective, future))
+
+        await asyncio.sleep(1)
+
+        for individual, robot, objective, future in robot_futures:
+            assert objective < len(self.config.objective_functions)
+
+            logger.info(f'Evaluation of Individual (objective {objective}) {robot.id}')
+            fitness, robot._behavioural_measurements = await future
+            individual.objectives[objective] = fitness
+            logger.info(f'Individual {individual.id} in objective {objective} has a fitness of {fitness}')
+
+            if robot._behavioural_measurements is None:
+                assert fitness is None
+
+        self.config.experiment_management \
+            .export_behavior_measures(robot.id, robot._behavioural_measurements, objective)
+
+        for individual, robot, objective, _ in robot_futures:
+            self.config.experiment_management.export_objectives(individual)
+
+
+    """
+    async def _evaluate_objectives(
+        self, new_individuals: List[Individual], gen_num: int
+    ) -> None:
+        """
+    """
+        Evaluates each individual in the new gen population for each objective
+        :param new_individuals: newly created population after an evolution iteration
+        :param gen_num: generation number
+        """
+    """
+        assert isinstance(self.config.objective_functions, list) is True
+        assert self.config.fitness_function is None
+
+        robot_futures = []
+        for individual in new_individuals:
+            individual.develop()
             individual.objectives = [
                 -math.inf for _ in range(len(self.config.objective_functions))
             ]
 
-            assert len(individual.phenotype) == len(self.config.objective_functions)
-            for objective, robot in enumerate(individual.phenotype):
+            #assert len(individual.phenotype) == len(self.config.objective_functions)
+            robot = individual.phenotype
+            for objective, objective_fun in enumerate(self.config.objective_functions):
                 logger.info(
                     f"Evaluating individual (gen {gen_num} - objective {objective}) {robot.id}"
                 )
-                objective_fun = self.config.objective_functions[objective]
                 future = asyncio.ensure_future(
                     self.evaluate_single_robot(
                         individual=individual,
@@ -283,6 +330,7 @@ class Population:
 
         for individual, robot, objective, _ in robot_futures:
             self.config.experiment_management.export_objectives(individual)
+        """
 
     async def evaluate(
         self, new_individuals: List[Individual], gen_num: int, type_simulation="evolve"

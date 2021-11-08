@@ -28,3 +28,6 @@ class Genotype(CppnneatGenotype):
             rng,
         )
         return Genotype(random_parent._multineat_genome)
+
+
+

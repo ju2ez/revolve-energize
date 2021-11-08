@@ -42,7 +42,7 @@
 #include "sensors/Sensor.h"
 
 // define this if you want to debug the weights of the CPG network
-//#define DifferentialCPG_PRINT_INFO
+define DifferentialCPG_PRINT_INFO
 
 // Define namespaces
 using namespace revolve;
