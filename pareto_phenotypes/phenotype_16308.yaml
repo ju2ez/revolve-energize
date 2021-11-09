@@ -1,0 +1,128 @@
+id: 16308
+body:
+  id: core
+  type: CoreComponent
+  orientation: 0
+  params:
+    blue: 0
+    green: 1
+    red: 1
+  children:
+    0:
+      id: core_0
+      type: ActiveHinge
+      orientation: 90
+      params:
+        blue: 0
+        green: 1
+        red: 0
+      children:
+        1:
+          id: core_0_1
+          type: ActiveHinge
+          orientation: 0
+          params:
+            blue: 0
+            green: 1
+            red: 0
+          children:
+            1:
+              id: core_0_1_1
+              type: ActiveHinge
+              orientation: 90
+              params:
+                blue: 0
+                green: 1
+                red: 0
+              children:
+                1:
+                  id: core_0_1_1_1
+                  type: ActiveHinge
+                  orientation: 90
+                  params:
+                    blue: 0
+                    green: 1
+                    red: 0
+    2:
+      id: core_2
+      type: ActiveHinge
+      orientation: 90
+      params:
+        blue: 0
+        green: 1
+        red: 0
+    3:
+      id: core_3
+      type: ActiveHinge
+      orientation: 0
+      params:
+        blue: 0
+        green: 1
+        red: 0
+      children:
+        1:
+          id: core_3_1
+          type: ActiveHinge
+          orientation: 90
+          params:
+            blue: 0
+            green: 1
+            red: 0
+          children:
+            1:
+              id: core_3_1_1
+              type: ActiveHinge
+              orientation: 0
+              params:
+                blue: 0
+                green: 1
+                red: 0
+              children:
+                1:
+                  id: core_3_1_1_1
+                  type: ActiveHinge
+                  orientation: 0
+                  params:
+                    blue: 0
+                    green: 1
+                    red: 0
+brain:
+  controller:
+    abs_output_bound: 1.0
+    init_neuron_state: 0.7071067811865476
+    load_brain: null
+    output_directory: null
+    output_signal_factor: 1.0
+    range_lb: null
+    range_ub: 1.0
+    reset_neuron_random: false
+    reset_neuron_state_bool: null
+    reset_robot_position: null
+    run_analytics: null
+    startup_time: null
+    use_frame_of_reference: true
+    verbose: null
+    weights:
+    - -2.051789669413119
+    - -3.4683521409984674
+    - -4.884914612583815
+    - -6.301477084169163
+    - -0.7501498843543231
+    - -0.5203045113012197
+    - -0.4053818247746678
+    - -0.29045913824811603
+    - -0.1755364517215643
+    - -2.6077166946139183
+    - -3.1636437198147176
+    - -1.579493774147704
+    - -1.4122315142769364
+    - -4.024279166199267
+    - -4.580206191400066
+    - -5.440841637784614
+    - -0.5828876244835557
+    - -0.4366733813658359
+    - -0.35304225143045215
+    - -0.32175069483928403
+    - -0.2381195649039003
+    - -0.2068280083127323
+  type: cpg-target
