@@ -31,7 +31,7 @@ def develop(genotype: Genotype, config: str) -> CoreModule:
     robot = RevolveBot()
     robot.load_file(path, conf_type='yaml')
     robot.save_file(f'{path}.sdf', conf_type='sdf')
-    log.info("SDF saved")
+    #log.info("SDF saved")
 
     return robot.body
 

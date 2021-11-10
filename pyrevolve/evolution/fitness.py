@@ -197,7 +197,6 @@ def panoramic_rotation(
 
 
 def move_to_target_if_angle_is_correct(robot_manager: RobotManager, robot: RevolveBot) -> float:
-
     # robot position, Vector3(pos.x, pos.y, pos.z)
     pos_0 = robot_manager._positions[0]  # start
     pos_1 = robot_manager._positions[-1]  # end
@@ -214,7 +213,6 @@ def move_to_target_if_angle_is_correct(robot_manager: RobotManager, robot: Revol
     overall_angle_fitness = 0
     # introduce penalty here....
     for orientation_vector in robot_manager._orientation_vecs:
-
         _delta = math.acos(
             min(  # bound to account for small float errors. acos crashes on 1.0000000001
                 1.0,
@@ -235,7 +233,7 @@ def move_to_target_if_angle_is_correct(robot_manager: RobotManager, robot: Revol
     )
     logger.info(f"Angle = {average_angle_fitness}")
 
-    fitness = 0.1*average_angle_fitness + dist_in_right_direction
+    fitness = 0.1 * average_angle_fitness + dist_in_right_direction
     logger.info(f"Overall Fitness = {fitness}")
     return fitness
 
@@ -378,7 +376,7 @@ def test_fitness(robot_manager: RobotManager, robot: RevolveBot) -> float:
 
     logger.info(f"The overall angle penalty is: {overall_angle_penalty}")
 
-    overall_fitness = fitness - 0.01*overall_angle_penalty - 0.001 * final_distance_to_target
+    overall_fitness = fitness - 0.01 * overall_angle_penalty - 0.001 * final_distance_to_target
 
     logger.info(f"The overall fitness is : {overall_fitness}")
 
@@ -458,17 +456,22 @@ def follow_line(robot_manager: RobotManager, robot: RevolveBot) -> float:
 
     # filter out passive blocks
     if dist_in_right_direction < 0.01:
-        fitness = 0
-        logger.info(f"Did not pass fitness test, fitness = {fitness}")
+        line_fitness = 0
+        logger.info(f"Did not pass fitness test")
     else:
-        fitness = (dist_in_right_direction / (epsilon + path_length)) * (
+        line_fitness = (dist_in_right_direction / (epsilon + path_length)) * (
                 dist_in_right_direction / (delta + 1)
                 - penalty_factor * dist_to_optimal_line
         )
 
-        logger.info(f"Fitness = {fitness}")
+    rotation_fitness = rotation(robot_manager, robot)
+    fitness = line_fitness - (rotation_fitness / 100)
 
-    return fitness
+    logger.info(f"Line fitness = {line_fitness}")
+    logger.info(f"Rotation fitness = {rotation_fitness}")
+    logger.info(f"Fitness = {fitness}")
+
+    return fitness - (rotation_fitness / 100)
 
 
 def two_fitnesses(robot_manager: RobotManager, robot: RevolveBot) -> (float, float):

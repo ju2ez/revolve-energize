@@ -51,7 +51,9 @@ async def run():
     # initialization finished
 
     # load robot file
-    path = "experiments/EC_students/data/ege-exp/1/data_fullevolution/phenotypes/phenotype_3611.yaml"
+    path = "experiments/EC_students/data/follow_line/1/data_fullevolution/phenotypes/phenotype_17334.yaml"
+    #4185, 13341, 15628, 17334, 24372
+
     robot = RevolveBot(_id=settings.test_robot)
     robot.load_file(path, conf_type="yaml")
     robot.update_substrate()
@@ -78,9 +80,6 @@ async def run():
         status = "dead" if robot_manager.dead else "alive"
         print(
             f"Robot fitness ({status}) is \n"
-            f" OLD:     {fitness.online_old_revolve(robot_manager)}\n"
-            f" DISPLAC: {fitness.displacement(robot_manager, robot)}\n"
-            f" DIS_VEL: {fitness.displacement_velocity(robot_manager, robot)}\n"
-            f" OUR_FITNESS: {fitness.move_to_target_if_angle_is_correct(robot_manager, robot)}"
+            f" OUR_FITNESS: {fitness.follow_line(robot_manager, robot)}"
         )
         await asyncio.sleep(1.0)

@@ -57,7 +57,7 @@ class GenotypeConstructorConfig:
 
 
 #robot_path = "babyA.yaml"
-robot_path = "babySchildi.yaml"
+robot_path = "phenotype.yaml"
 
 def create_random_genotype(
     config: GenotypeConstructorConfig, id: int
@@ -82,9 +82,9 @@ async def run():
     """
 
     # experiment params #
-    num_generations = 44
-    population_size = 11
-    offspring_size = 5
+    num_generations = 300
+    population_size = 200
+    offspring_size = 100
 
     target_distance = 10
 
@@ -137,10 +137,7 @@ async def run():
 
     # genotype constructor config. Used by `create_random_genotype` in this file.
     genotype_constructor_config = GenotypeConstructorConfig(
-        PlasticodingConfig(
-            max_structural_modules=15,
-            #plastic=False,
-        ),
+        None,
         brain_n_start_mutations,
         bodybrain_composition_config,
         multineat_params_brain,
