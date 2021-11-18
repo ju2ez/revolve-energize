@@ -1,7 +1,7 @@
 set (CMAKE_CXX_STANDARD 14)
 
 set(CONTROLLER_SRCS
-    controller/sensors/AngleToTargetDetector.cpp
+    controller/actuators/sensors/AngleToTargetDetector.cpp
     controller/DifferentialCPG.cpp
 )
 

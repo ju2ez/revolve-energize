@@ -27,7 +27,7 @@
 #include <gazebo/common/common.hh>
 
 #include <revolve/gazebo/Types.h>
-#include <revolve/brains/controller/sensors/Sensor.h>
+#include <revolve/brains/controller/actuators/sensors/Sensor.h>
 
 namespace revolve
 {

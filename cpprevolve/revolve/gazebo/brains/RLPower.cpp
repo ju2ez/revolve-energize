@@ -516,3 +516,7 @@ void RLPower::Output(
     _output[i] = y_a + ((y_b - y_a) * (x - x_a) / (x_b - x_a));
   }
 }
+
+bool RLPower::angle_to_target_below_threshold(double threshold) {
+    return false;
+}

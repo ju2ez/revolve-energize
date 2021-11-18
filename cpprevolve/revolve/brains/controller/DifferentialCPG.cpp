@@ -39,10 +39,10 @@
 
 // Project headers
 #include "actuators/Actuator.h"
-#include "sensors/Sensor.h"
+#include "actuators/sensors/Sensor.h"
 
 // define this if you want to debug the weights of the CPG network
-define DifferentialCPG_PRINT_INFO
+#define DifferentialCPG_PRINT_INFO;
 
 // Define namespaces
 using namespace revolve;
@@ -633,4 +633,22 @@ void DifferentialCPG::step(
 double DifferentialCPG::output_function(double input) const
 {
     return this->output_signal_factor * this->abs_output_bound * ((2.0) / (1.0 + std::pow(2.718, -2.0 * input / this->abs_output_bound)) - 1);
+}
+
+bool DifferentialCPG::angle_to_target_below_threshold(double threshold) {
+    double angle_difference = angle_to_target_sensor->detect_angle();
+
+    //  Pick smallest angle between target and sensor
+    if (angle_difference > M_PI)
+    {
+        //            std::cout << "Angle [" << angle_difference << "] is greater then pi" << std::endl;
+        angle_difference -= 2 * M_PI;
+    }
+    else if (angle_difference < -M_PI)
+    {
+        //            std::cout << "Angle [" << angle_difference << "] is smaller then pi" << std::endl;
+        angle_difference += 2 * M_PI;
+    }
+
+    return angle_difference < threshold;
 }

@@ -29,7 +29,7 @@
 #include <gazebo/msgs/msgs.hh>
 
 #include <revolve/gazebo/Types.h>
-#include "revolve/brains/controller/sensors/Sensor.h"
+#include "revolve/brains/controller/actuators/sensors/Sensor.h"
 #include "revolve/brains/controller/actuators/Actuator.h"
 
 namespace revolve
@@ -63,6 +63,9 @@ namespace revolve
       /// \brief Update event which, by default, is called periodically
       /// according to the update rate specified in the robot plugin.
       public: virtual void DoUpdate(const ::gazebo::common::UpdateInfo _info);
+
+
+    public: virtual void SwitchBrain();
 
       /// \brief Returns the battery level
       /// \details Methods allows reading and writing the battery level in
@@ -120,11 +123,17 @@ namespace revolve
       /// \brief Brain controlling this model
       protected: std::unique_ptr<::revolve::Controller> brain_;
 
+      protected: ignition::math::Vector3d target_;
+
+    protected: sdf::ElementPtr brain_sdf_;
+
       /// \brief Actuation time, in seconds
       protected: double actuationTime_;
 
       /// \brief Time of initialisation
       protected: double initTime_;
+
+    protected: bool switched_;
 
       /// \brief rv:battery element, if present
       protected: sdf::ElementPtr batteryElem_;

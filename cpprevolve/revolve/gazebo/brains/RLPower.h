@@ -87,6 +87,7 @@ namespace revolve
           const std::vector< SensorPtr > &_sensors,
           double _time,
           double _step) override;
+    public: bool angle_to_target_below_threshold(double threshold);
 
       /// \brief
       protected: struct Config;

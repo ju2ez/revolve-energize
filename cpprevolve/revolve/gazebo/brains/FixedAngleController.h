@@ -7,7 +7,7 @@
 
 
 #include <revolve/brains/controller/actuators/Actuator.h>
-#include <revolve/brains/controller/sensors/Sensor.h>
+#include <revolve/brains/controller/actuators/sensors/Sensor.h>
 #include <revolve/brains/controller/FixedAngleController.h>
 #include <revolve/gazebo/motors/ActuatorWrapper.h>
 #include "Brain.h"
@@ -24,7 +24,13 @@ public:
         : revolve::FixedAngleController(angle)
     {}
 
+public: bool angle_to_target_below_threshold(double threshold);
+
 };
+
+    bool FixedAngleController::angle_to_target_below_threshold(double threshold) {
+        return false;
+    }
 
 }
 }

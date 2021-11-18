@@ -25,7 +25,7 @@
 #include <gazebo/sensors/SensorTypes.hh>
 #include <sdf/Element.hh>
 
-#include <revolve/brains/controller/sensors/Sensor.h>
+#include <revolve/brains/controller/actuators/sensors/Sensor.h>
 
 namespace revolve
 {

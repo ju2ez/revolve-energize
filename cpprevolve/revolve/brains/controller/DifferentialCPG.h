@@ -7,8 +7,8 @@
 
 #include "Controller.h"
 #include "actuators/Actuator.h"
-#include "sensors/Sensor.h"
-#include "sensors/AngleToTargetDetector.h"
+#include "actuators/sensors/Sensor.h"
+#include "actuators/sensors/AngleToTargetDetector.h"
 
 #include <map>
 #include <memory>
@@ -66,6 +66,8 @@ public:
             const std::vector<std::shared_ptr<Sensor>> &sensors,
             double _time,
             double _step) override;
+
+    bool angle_to_target_below_threshold(double threshold);
 
     /// \brief Set the connection weights of the Controller and make sure the matrix is set appropriately
     /// \param[in] The weights to be set

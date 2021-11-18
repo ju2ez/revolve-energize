@@ -23,7 +23,7 @@
 #include <memory>
 #include <vector>
 #include <revolve/brains/controller/actuators/Actuator.h>
-#include <revolve/brains/controller/sensors/Sensor.h>
+#include <revolve/brains/controller/actuators/sensors/Sensor.h>
 
 
 namespace revolve

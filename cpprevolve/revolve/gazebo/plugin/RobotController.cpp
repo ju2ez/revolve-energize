@@ -48,6 +48,7 @@ RobotController::~RobotController()
   this->world_.reset();
   this->motorFactory_.reset();
   this->sensorFactory_.reset();
+  this->switched_ = false;
 }
 
 /////////////////////////////////////////////////
@@ -102,11 +103,17 @@ void RobotController::Load(
     // can potentially be reordered.
     this->LoadBrain(robotConfiguration);
 
+      std::cout << "SOME OK" << std::endl;
+
     // Call the battery loader
     this->LoadBattery(robotConfiguration);
 
+      std::cout << "LOOKS OK" << std::endl;
+
     // Call startup function which decides on actuation
     this->Startup(_parent, _sdf);
+
+    std::cout << "ALL OK" << std::endl;
   }
   catch (const std::exception &e)
   {
@@ -255,9 +262,13 @@ void RobotController::LoadBrain(const sdf::ElementPtr _sdf)
 
     ignition::math::Vector3d target(target_vec[0], target_vec[1], target_vec[2]);
 
+    target_ = target;
+    brain_sdf_ = brain_sdf;
+
     std::shared_ptr<revolve::AngleToTargetDetector> fake_target_sensor(
         new GZAngleToTargetDetector(this->model_, target));
     brain_.reset(new DifferentialCPGClean(brain_sdf, motors_, fake_target_sensor));
+    switched_ = false;
   }
   else if ("offline" == learner and "cpg" == controller_type)
   {
@@ -310,10 +321,23 @@ void RobotController::DoUpdate(const ::gazebo::common::UpdateInfo _info)
 {
   auto currentTime = _info.simTime.Double() - initTime_;
 
-  if (brain_)
-    brain_->update(motors_, sensors_, currentTime, actuationTime_);
+  if (brain_) {
+      brain_->update(motors_, sensors_, currentTime, actuationTime_);
+      if (!(switched_) && brain_->angle_to_target_below_threshold(0.1)) {
+          std::cout << "SWITCHING BRAIN" << std::endl;
+          this->SwitchBrain();
+          switched_ = true;
+          std::cout << "SWITCHED BRAIN" << std::endl;
+      }
+  }
 }
 
+void RobotController::SwitchBrain()
+{
+    std::shared_ptr<revolve::AngleToTargetDetector> fake_target_sensor(
+            new GZAngleToTargetDetector(this->model_, target_));
+    brain_.reset(new DifferentialCPGClean(brain_sdf_, motors_, fake_target_sensor, true));
+}
 /////////////////////////////////////////////////
 void RobotController::LoadBattery(const sdf::ElementPtr _sdf)
 {

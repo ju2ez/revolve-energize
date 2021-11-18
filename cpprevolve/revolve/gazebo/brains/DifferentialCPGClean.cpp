@@ -9,7 +9,15 @@ using namespace revolve::gazebo;
 DifferentialCPGClean::DifferentialCPGClean(const sdf::ElementPtr brain_sdf,
                                            const std::vector<MotorPtr> &_motors,
                                            std::shared_ptr<revolve::AngleToTargetDetector> angle_to_target_sensor)
-    : revolve::DifferentialCPG(load_params_from_sdf(brain_sdf), _motors, angle_to_target_sensor)
+    : revolve::DifferentialCPG(load_params_from_sdf(brain_sdf, false), _motors, angle_to_target_sensor)
+{
+}
+
+DifferentialCPGClean::DifferentialCPGClean(const sdf::ElementPtr brain_sdf,
+                                           const std::vector<MotorPtr> &_motors,
+                                           std::shared_ptr<revolve::AngleToTargetDetector> angle_to_target_sensor,
+                                           bool use_secondary_brain)
+        : revolve::DifferentialCPG(load_params_from_sdf(brain_sdf, use_secondary_brain), _motors, angle_to_target_sensor)
 {
 }
 
@@ -17,15 +25,19 @@ DifferentialCPGClean::DifferentialCPGClean(const sdf::ElementPtr brain_sdf,
                                            const std::vector<MotorPtr> &_motors,
                                            const NEAT::Genome &genome,
                                            std::shared_ptr<revolve::AngleToTargetDetector> angle_to_target_sensor)
-    : revolve::DifferentialCPG(load_params_from_sdf(brain_sdf), _motors, genome, angle_to_target_sensor)
+    : revolve::DifferentialCPG(load_params_from_sdf(brain_sdf, false), _motors, genome, angle_to_target_sensor)
 {
 }
 
-revolve::DifferentialCPG::ControllerParams DifferentialCPGClean::load_params_from_sdf(sdf::ElementPtr brain_sdf)
+revolve::DifferentialCPG::ControllerParams DifferentialCPGClean::load_params_from_sdf(sdf::ElementPtr brain_sdf, bool use_secondary_brain)
 {
     // Get all params from the sdf
     // TODO: Add exception handling
     sdf::ElementPtr controller_sdf = brain_sdf->GetElement("rv:controller");
+    if (use_secondary_brain) {
+        std::clog << "USING SECONDARY BRAIN" << std::endl;
+        controller_sdf = brain_sdf->GetElement("rv:secondary_controller");
+    }
     std::clog << "USE_FRAME_OF_REFERENCE: " << controller_sdf->GetAttribute("use_frame_of_reference")->GetAsString() << std::endl;
     revolve::DifferentialCPG::ControllerParams params;
     // params.reset_neuron_random = (controller_sdf->GetAttribute("reset_neuron_random")->Get<bool>(params.reset_neuron_random));

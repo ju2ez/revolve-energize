@@ -679,6 +679,10 @@ void NeuralNetwork::ConnectionHelper(
   }
 }
 
+bool NeuralNetwork::angle_to_target_below_threshold(double threshold) {
+    return false;
+}
+
 /////////////////////////////////////////////////
 void neuronHelper(
     double *params,

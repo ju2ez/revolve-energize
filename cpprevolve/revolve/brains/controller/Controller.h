@@ -6,7 +6,7 @@
 #define REVOLVE_CONTROLLER_H
 
 #include "actuators/Actuator.h"
-#include "sensors/Sensor.h"
+#include "actuators/sensors/Sensor.h"
 #include <vector>
 #include <memory>
 
@@ -40,6 +40,8 @@ public:
             const double _time,
             const double _step
     ) = 0;
+
+    virtual bool angle_to_target_below_threshold(double threshold) = 0;
 
     virtual DifferentialCPG* into_DifferentialCPG() { return nullptr; }
 };

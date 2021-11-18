@@ -80,6 +80,8 @@ namespace revolve
           double _time,
           double _step) override;
 
+    public: bool angle_to_target_below_threshold(double threshold);
+
       /// \brief Steps the neural network
       protected: void Step(const double _time);
 

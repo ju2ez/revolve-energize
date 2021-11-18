@@ -469,6 +469,14 @@ class WorldManager(manage.WorldManager):
         )
         return robot_manager
 
+    async def insert_robot_from_sdf(self, sdf_bot, revolve_bot, life_timeout: Optional[float] = None):
+        response = await self.insert_model(sdf_bot, life_timeout)
+        robot_manager = self._robot_inserted(
+            robot=revolve_bot,
+            msg=response
+        )
+        return robot_manager
+
     def to_sdfbot(
             self,
             robot,

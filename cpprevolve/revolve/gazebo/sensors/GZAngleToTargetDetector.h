@@ -1,7 +1,7 @@
 #pragma once
 
 #include <gazebo/physics/Model.hh>
-#include "revolve/brains/controller/sensors/AngleToTargetDetector.h"
+#include "revolve/brains/controller/actuators/sensors/AngleToTargetDetector.h"
 
 namespace revolve {
 namespace gazebo {
