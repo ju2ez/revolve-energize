@@ -650,5 +650,5 @@ bool DifferentialCPG::angle_to_target_below_threshold(double threshold) {
         angle_difference += 2 * M_PI;
     }
 
-    return angle_difference < threshold;
+    return std::abs(angle_difference) < threshold;
 }
