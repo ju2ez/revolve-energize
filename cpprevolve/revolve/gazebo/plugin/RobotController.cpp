@@ -323,7 +323,7 @@ void RobotController::DoUpdate(const ::gazebo::common::UpdateInfo _info)
 
   if (brain_) {
       brain_->update(motors_, sensors_, currentTime, actuationTime_);
-      if (currentTime>500) {
+      if (currentTime>400) {
         if (!(switched_) && brain_->angle_to_target_below_threshold(0.1)) {
             std::cout << "SWITCHING BRAIN" << std::endl;
             this->SwitchBrain();
@@ -334,7 +334,7 @@ void RobotController::DoUpdate(const ::gazebo::common::UpdateInfo _info)
       else{
           int c_t = (int) currentTime;
           if (c_t%100 == 0) {
-            std::cout << "Current Time: " << currentTime << std::endl;
+            std::cout << "Current Time: " << c_t << std::endl;
           }
       }
   }

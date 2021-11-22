@@ -51,7 +51,7 @@ async def run():
     # initialization finished
 
     # load robot file
-    path = "phenotype_4302.yaml"
+    path = "phenotype_8657_follow_line.yaml"
     #robot = RevolveBot(_id=settings.test_robot)
     robot = RevolveBot()
     robot.load_file(path, conf_type="yaml")
@@ -59,7 +59,7 @@ async def run():
 
     #robot.save_file(f"{path}.sdf", conf_type="sdf")
 
-    with open('phenotype_4302.yaml.sdf', 'r') as file:
+    with open('phenotype_8657_follow_line.yaml.sdf', 'r') as file:
         sdf_bot = file.read().replace('\n', '')
 
     target_direction = 240 / 360 * 2 * math.pi
@@ -82,7 +82,7 @@ async def run():
             robot, life_timeout=None
             )
 
-    await asyncio.sleep(1.0)
+    await asyncio.sleep(2.0)
 
     # Start the main life loop
     while True:
@@ -97,4 +97,4 @@ async def run():
             f" Test Fitness: {test_fitness(robot_manager, robot)}\n",
             f" Robot Position: {position}"
         )
-        await asyncio.sleep(1.0)
+        await asyncio.sleep(2.0)
