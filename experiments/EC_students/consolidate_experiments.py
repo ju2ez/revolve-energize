@@ -1,9 +1,11 @@
 import os
+import csv
+from tqdm import tqdm
 
 # set these variables according to your experiments #
-dirpath = 'data'
+dirpath = 'data/nsga2_exp_abs_rot_4'
 experiments_type = [
-    'serious_exp'
+    ''
 ]
 runs = 1
 
@@ -90,6 +92,8 @@ def build_headers(path):
     file_summary.write(phenotype_headers[-1] + '\t')
     phenotype_headers.append('hinge_count')
     file_summary.write(phenotype_headers[-1] + '\t')
+    phenotype_headers.append('la_count')
+    file_summary.write(phenotype_headers[-1] + '\t')
     phenotype_headers.append('active_hinges_count')
     file_summary.write(phenotype_headers[-1] + '\t')
     phenotype_headers.append('brick_count')
@@ -136,16 +140,24 @@ def build_headers(path):
     return behavior_headers, phenotype_headers
 
 
-for exp in experiments_type:
-    for run in range(1, runs + 1):
+for exp in tqdm(experiments_type):
+    for run in tqdm(range(1, runs + 1)):
 
         # print(exp, run)
         path = os.path.join(dirpath, str(exp), str(run))
         behavior_headers, phenotype_headers = build_headers(path)
 
         file_summary = open(path + "/all_measures.tsv", "a")
+        fitnesses = {}
+        with open(path + "/data_fullevolution/fitness.csv") as f:
+            reader = csv.reader(f)
+            for row in reader:
+                robot_id = row[0]
+                fitness = row[1]
+                fitnesses[robot_id] = fitness
+
         for r, d, f in os.walk(path + '/data_fullevolution/genotypes'):
-            for file in f:
+            for file in tqdm(f):
 
                 robot_id = file.split('.')[0].split('_')[-1]
                 file_summary.write(robot_id + '\t')
@@ -201,14 +213,10 @@ for exp in experiments_type:
                     for h in phenotype_headers:
                         file_summary.write('None' + '\t')
 
-
-                fitness_file = path + '/data_fullevolution/fitness/fitness_robot_' + robot_id + '.txt'
-                if os.path.isfile(fitness_file):
-                    with open(fitness_file) as file:
-                        fitness = file.read()
-                        file_summary.write(fitness + '\t')
-                else:
-                    file_summary.write('0' + '\t')
+                try: 
+                    file_summary.write(fitnesses[robot_id] + '\t')
+                except: 
+                    file_summary.write(0 + '\t')
 
                 fb_file = path+'/data_fullevolution/fitness/fitness_robot_'+robot_id+'_revdeknn_9.txt'
                 if os.path.isfile(fb_file):

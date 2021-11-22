@@ -51,10 +51,16 @@ async def run():
     # initialization finished
 
     # load robot file
-    path = "experiments/EC_students/data/nsga2_exp_abs_rot_4/4/data_fullevolution/phenotypes/phenotype_12454.yaml"
-    robot = RevolveBot(_id=settings.test_robot)
+    path = "phenotype_4302.yaml"
+    #robot = RevolveBot(_id=settings.test_robot)
+    robot = RevolveBot()
     robot.load_file(path, conf_type="yaml")
     robot.update_substrate()
+
+    #robot.save_file(f"{path}.sdf", conf_type="sdf")
+
+    with open('phenotype_4302.yaml.sdf', 'r') as file:
+        sdf_bot = file.read().replace('\n', '')
 
     target_direction = 240 / 360 * 2 * math.pi
     target_as_vector = (
@@ -66,12 +72,16 @@ async def run():
 
     robot._brain.target = (0.0 ,10.0 , 0.0)
 
-    robot.save_file(f"{path}.sdf", conf_type="sdf")
 
     # insert robot into the simulator
-    robot_manager = await connection.insert_robot(
-        robot, Vector3(1, 0, 0.25), life_timeout=None
-    )
+    #robot_manager = await connection.insert_robot(
+    #    robot, Vector3(1, 0, 0.25), life_timeout=None
+    #)
+
+    robot_manager = await connection.insert_robot_from_sdf(sdf_bot,
+            robot, life_timeout=None
+            )
+
     await asyncio.sleep(1.0)
 
     # Start the main life loop

@@ -16,10 +16,10 @@ library(viridis)
 base_directory <- c(
   'data',  'data')
 
-analysis = 'analysis'
+analysis = 'analysis/absrot4'
 output_directory = paste(base_directory[2],'/',analysis ,sep='')
 
-experiments_type = c(  'follow_line_and_stop_1'
+experiments_type = c(  'nsga2_exp_abs_rot_4'
 
 )
 runs = list(
@@ -59,9 +59,9 @@ ribbon_colors = c(
 #aggregations = c('min', 'Q25','mean', 'median', 'Q75','max')
 aggregations = c('mean', 'median','max')
 
-gens = 10
-pop = 10
-num_heatmaps = 1
+gens = 333
+pop = 111
+num_heatmaps = 30
 
 gens_box_comparisons = c(gens-1)
 
@@ -341,7 +341,7 @@ for (i in 1:length(measures_names))
     }
     graph = graph  +  labs(y=measures_labels[i], x="generation", title="")
     
-    graph = graph +   scale_color_manual(values=experiments_type_colors, labels = c("lsys"))
+    graph = graph +   scale_color_manual(values=experiments_type_colors, labels = c("cppn"))
     graph = graph  + theme_bw()
     graph = graph  + theme(legend.position="top" ,  legend.text=element_text(size=25), 
                            #legend.background = element_rect(fill = "darkgray",color = NA),
