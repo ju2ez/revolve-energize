@@ -51,15 +51,14 @@ async def run():
     # initialization finished
 
     # load robot file
-    path = "phenotype_8657_follow_line.yaml"
+    path = "./phenotype_10347/phenotype_9675.yaml"
     #robot = RevolveBot(_id=settings.test_robot)
     robot = RevolveBot()
     robot.load_file(path, conf_type="yaml")
     robot.update_substrate()
+    robot.save_file(f"{path}.sdf", conf_type="sdf")
 
-    #robot.save_file(f"{path}.sdf", conf_type="sdf")
-
-    with open('phenotype_8657_follow_line.yaml.sdf', 'r') as file:
+    with open('./phenotype_10347/phenotype_9675.yaml', 'r') as file:
         sdf_bot = file.read().replace('\n', '')
 
     target_direction = 240 / 360 * 2 * math.pi
