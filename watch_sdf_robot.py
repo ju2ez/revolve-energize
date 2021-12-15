@@ -48,12 +48,16 @@ async def run():
 
     # initialization finished
     # load robot file
-    path = "phenotype_rotation.yaml"
+    path = "switch_brain.yaml"
+    sdf_path = f"{path}.sdf"
+    #robot = RevolveBot(_id=settings.test_robot)
     robot = RevolveBot()
     robot.load_file(path, conf_type="yaml")
     robot.update_substrate()
-
-    robot.save_file(f"{path}.sdf", conf_type="sdf")
+    with open(sdf_path, 'r') as file:
+        sdf_bot = file.read().replace('\n', '')
+    with open('still_robot.sdf', 'r') as file:
+        sdf_bot_2 = file.read().replace('\n', '')
 
     target_direction = 240 / 360 * 2 * math.pi
     target_as_vector = (
@@ -65,11 +69,12 @@ async def run():
 
     robot._brain.target = (0.0 ,10.0 , 0.0)
 
-
-    # insert robot into the simulator
-    robot_manager = await connection.insert_robot(
-       robot, life_timeout=None
-    )
+    robot_manager = await connection.insert_robot_from_sdf(sdf_bot,
+                                                          robot, life_timeout=None
+                                                          )
+    await connection.insert_robot_from_sdf(sdf_bot_2,
+                                           robot, life_timeout=None
+                                           )
 
     await asyncio.sleep(2.0)
 
