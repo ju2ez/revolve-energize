@@ -52,7 +52,6 @@ async def run():
     robot = RevolveBot()
     robot.load_file(path, conf_type="yaml")
     robot.update_substrate()
-
     robot.save_file(f"{path}.sdf", conf_type="sdf")
 
     target_direction = 240 / 360 * 2 * math.pi
