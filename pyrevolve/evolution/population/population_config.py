@@ -19,7 +19,7 @@ class PopulationConfig:
                  mutation_conf: object,
                  crossover_operator: Callable[[List[Individual], object, object], Genotype],
                  crossover_conf: object,
-                 selection: Optional[Callable[[List[Individual]], Individual]],
+                 selection: Callable[[List[Individual]], Individual],
                  parent_selection: Callable[[List[Individual]], List[Individual]],
                  population_management: Callable[
                      [List[Individual], List[Individual], Callable[[List[Individual]], Individual]],
@@ -31,7 +31,8 @@ class PopulationConfig:
                  experiment_management,
                  offspring_size: Optional[int] = None,
                  grace_time: float = 0.0,
-                 objective_functions: Optional[List[Callable[[RobotManager, RevolveBot], float]]] = None):
+                 objective_functions: Optional[List[Callable[[RobotManager, RevolveBot], float]]] = None,
+                 fitness_functions_to_save: Optional[List[Callable[[RobotManager, RevolveBot], float]]] = None):
         """
         Creates a PopulationConfig object that sets the particular configuration for the population
 
@@ -83,3 +84,4 @@ class PopulationConfig:
         self.experiment_management = experiment_management
         self.offspring_size = offspring_size
         self.objective_functions = objective_functions
+        self.fitness_functions_to_save = fitness_functions_to_save

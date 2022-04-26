@@ -34,7 +34,9 @@ class ExperimentManagement:
         self._phenotype_folder: str = os.path.join(self.data_folder, 'phenotypes')
         self._phenotype_images_folder: str = os.path.join(self._phenotype_folder, 'images')
         self._fitness_file_path: str = os.path.join(self.data_folder, 'fitness.csv')
+        self._extra_fitnesses_file_path: str = os.path.join(self.data_folder, 'extra_fitness.csv')
         self._fitnesses_saved = set()
+        self._fitnesses_saved_extra = set()
         self._descriptor_folder: str = os.path.join(self.data_folder, 'descriptors')
         self._behavioural_desc_folder: str = os.path.join(self._descriptor_folder, 'behavioural')
         self._failed_robots_folder: str = os.path.join(self.data_folder, 'failed_eval_robots')
@@ -142,6 +144,42 @@ class ExperimentManagement:
             with open(self._fitness_file_path, 'a') as fitness_file:
                 fitness_file.write(fitness_line)
                 self._fitnesses_saved.add(individual.id)
+
+    def export_extra_fitness(self, individual: Individual, extra_fitnesses) -> None:
+        objectives_string = ','.join([str(o) for o in extra_fitnesses])
+        fitness_line = f'{individual.id},{objectives_string}\n'
+
+        if individual.id in self._fitnesses_saved_extra:
+            # search and overwrite
+            logger.warning(f'Individual({individual.id}) extra fitness is going to be overwritten, '
+                           f'normally is not be expected')
+            str_individual_id = str(individual.id)
+            with open(self._extra_fitnesses_file_path, 'r') as fitness_file:
+                lines = fitness_file.readlines()
+            with open(self._extra_fitnesses_file_path, 'w') as fitness_file:
+                found = False
+                for line in lines:
+                    splitted_line = line.split(',')
+                    _file_id = splitted_line[0]
+                    _file_fitness = splitted_line[1:]
+                    if _file_id == str_individual_id:
+                        logger.warning(f'Individual({individual.id}) extra fitness overwritten, '
+                                       f'the old value was {_file_fitness}')
+                        fitness_file.write(fitness_line)
+                        found = True
+                    else:
+                        fitness_file.write(line)
+
+                if not found:
+                    logger.error(f"extra fitness of individual_{str_individual_id} should have been in fitness.csv file but "
+                                 f"was not found, appending at the end")
+                    self._fitnesses_saved_extra.remove(individual.id)
+                    self.export_extra_fitness(individual, extra_fitnesses)
+        else:
+            # append at the end
+            with open(self._extra_fitnesses_file_path, 'a') as fitness_file:
+                fitness_file.write(fitness_line)
+                self._fitnesses_saved_extra.add(individual.id)
 
     def export_objectives(self, individual: Individual) -> None:
         """
@@ -422,21 +460,15 @@ class ExperimentManagement:
         if fitness is None:
             with open(self._fitness_file_path, 'r') as fitness_file:
                 for line in fitness_file:
-                    line = line.replace('(','').replace(')','')
                     line_split = line.split(',')
                     line_id = line_split[0]
                     line_fitness = line_split[1:]  # type List[str]
-                    
-                    if int(line_id) == _id:
+                    if line_id == _id:
                         objectives = [None if line_fitness_v.startswith('None') else float(line_fitness_v) for line_fitness_v in line_fitness]
                         if len(line_fitness) == 1:
                             fitness = objectives[0]
                             objectives = None
-                        elif len(line_fitness) == 2:
-                            fitness = (objectives[0], objectives[1])
-                            objectives = None
                         break
-                    
                 else:
                     fitness = None
                     objectives = None

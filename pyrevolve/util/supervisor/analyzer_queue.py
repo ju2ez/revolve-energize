@@ -34,7 +34,8 @@ class AnalyzerQueue(SimulatorQueue):
                               simulator_connection,
                               robot: RevolveBot,
                               conf: PopulationConfig,
-                              _fitness_fun: Callable[[RobotManager, RevolveBot], float]):
+                              _fitness_fun: Callable[[RobotManager, RevolveBot], float],
+                              fitness_funs_to_save):
         if robot.failed_eval_attempt_count == 3:
             logger.info(f'Robot {robot.phenotype.id} analyze failed (reached max attempt of 3), fitness set to None.')
             analyze_result = None

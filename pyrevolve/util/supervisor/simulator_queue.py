@@ -1,7 +1,7 @@
 import asyncio
 import os
 import time
-from typing import Tuple, Callable, Optional
+from typing import Tuple, Callable, Optional, List
 
 from pyrevolve.angle.manage.robotmanager import RobotManager
 from pyrevolve.revolve_bot import RevolveBot
@@ -76,7 +76,7 @@ class SimulatorQueue:
 
         await asyncio.sleep(1)
 
-    def test_robot(self, individual: Individual, robot: RevolveBot, conf: PopulationConfig, fitness_fun):
+    def test_robot(self, individual: Individual, robot: RevolveBot, conf: PopulationConfig, fitness_fun, fitness_funs_to_save = []):
         """
         :param individual: robot individual
         :param robot: robot phenotype
@@ -84,7 +84,7 @@ class SimulatorQueue:
         :return: asyncio future that resolves when the robot is evaluated
         """
         future = asyncio.Future()
-        self._robot_queue.put_nowait((individual, robot, future, conf, fitness_fun))
+        self._robot_queue.put_nowait((individual, robot, future, conf, fitness_fun, fitness_funs_to_save))
         return future
 
     async def _restart_simulator(self, i):
@@ -105,12 +105,12 @@ class SimulatorQueue:
         self._connections[i] = await self._connect_to_simulator(self._settings, address, port)
         logger.debug("Restarting simulator done... connection done")
 
-    async def _worker_evaluate_robot(self, connection, robot: RevolveBot, future, conf, fitness_fun):
+    async def _worker_evaluate_robot(self, connection, robot: RevolveBot, future, conf, fitness_fun, fitness_funs_to_save):
         await asyncio.sleep(0.01)
         start = time.time()
         try:
             timeout = self.EVALUATION_TIMEOUT  # seconds
-            result = await asyncio.wait_for(self._evaluate_robot(connection, robot, conf, fitness_fun), timeout=timeout)
+            result = await asyncio.wait_for(self._evaluate_robot(connection, robot, conf, fitness_fun, fitness_funs_to_save), timeout=timeout)
         except asyncio.TimeoutError:
             # WAITED TO MUCH, RESTART SIMULATOR
             elapsed = time.time()-start
@@ -132,10 +132,10 @@ class SimulatorQueue:
                 await self._connections[i].reset(rall=True, time_only=True, model_only=False)
             while True:
                 logger.info(f"simulator {i} waiting for robot")
-                (individual, robot, future, conf, fitness_fun) = await self._robot_queue.get()
+                (individual, robot, future, conf, fitness_fun, fitness_funs_to_save) = await self._robot_queue.get()
                 self._free_simulator[i] = False
                 logger.info(f"Picking up robot {robot.id} into simulator {i}")
-                success = await self._worker_evaluate_robot(self._connections[i], robot, future, conf, fitness_fun)
+                success = await self._worker_evaluate_robot(self._connections[i], robot, future, conf, fitness_fun, fitness_funs_to_save)
                 if success:
                     if robot.failed_eval_attempt_count == 3:
                         logger.info("Robot failed to be evaluated 3 times. Saving robot to failed_eval file")
@@ -146,7 +146,7 @@ class SimulatorQueue:
                     # restart of the simulator happened
                     robot.failed_eval_attempt_count += 1
                     logger.info(f"Robot {robot.id} current failed attempt: {robot.failed_eval_attempt_count}")
-                    await self._robot_queue.put((individual, robot, future, conf, fitness_fun))
+                    await self._robot_queue.put((individual, robot, future, conf, fitness_fun, fitness_funs_to_save))
                     await self._restart_simulator(i)
                     if self._enable_play_pause:
                         await self._connections[i].pause(True)
@@ -160,7 +160,8 @@ class SimulatorQueue:
                               simulator_connection,
                               robot: RevolveBot,
                               conf: PopulationConfig,
-                              fitness_fun: Callable[[RobotManager, RevolveBot], float]) \
+                              fitness_fun: Callable[[RobotManager, RevolveBot], float],
+                              fitness_funs_to_save) \
             -> Tuple[Optional[float], Optional[measures.BehaviouralMeasurements]]:
         if robot.failed_eval_attempt_count >= 3:
             logger.info(f'Robot {robot.id} evaluation failed (reached max attempt of 3), fitness set to None.')
@@ -187,13 +188,18 @@ class SimulatorQueue:
 
             robot_fitness = fitness_fun(robot_manager, robot)
 
+            saved_fitnesses = []
+
+            for fitness_function in fitness_funs_to_save:
+                saved_fitnesses.append(fitness_function(robot_manager, robot))
+
             simulator_connection.unregister_robot(robot_manager)
             # await simulator_connection.delete_all_robots()
             # await simulator_connection.delete_robot(robot_manager)
             if self._enable_play_pause:
                 await simulator_connection.pause(True)
             await simulator_connection.reset(rall=True, time_only=True, model_only=False)
-            return robot_fitness, measures.BehaviouralMeasurements(robot_manager, robot)
+            return robot_fitness, saved_fitnesses, measures.BehaviouralMeasurements(robot_manager, robot)
 
     async def _join(self):
         await self._robot_queue.join()
