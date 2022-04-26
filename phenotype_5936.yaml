@@ -1,0 +1,126 @@
+id: 5936
+body:
+  id: core
+  type: CoreComponent
+  orientation: 0
+  params:
+    blue: 0
+    green: 1
+    red: 1
+  children:
+    0:
+      id: core_0
+      type: ActiveHinge
+      orientation: 90
+      params:
+        blue: 0
+        green: 1
+        red: 0
+      children:
+        1:
+          id: core_0_1
+          type: ActiveHinge
+          orientation: 90
+          params:
+            blue: 0
+            green: 1
+            red: 0
+    1:
+      id: core_1
+      type: ActiveHinge
+      orientation: 0
+      params:
+        blue: 0
+        green: 1
+        red: 0
+      children:
+        1:
+          id: core_1_1
+          type: ActiveHinge
+          orientation: 0
+          params:
+            blue: 0
+            green: 1
+            red: 0
+          children:
+            1:
+              id: core_1_1_1
+              type: ActiveHinge
+              orientation: 90
+              params:
+                blue: 0
+                green: 1
+                red: 0
+    2:
+      id: core_2
+      type: ActiveHinge
+      orientation: 0
+      params:
+        blue: 0
+        green: 1
+        red: 0
+      children:
+        1:
+          id: core_2_1
+          type: ActiveHinge
+          orientation: 0
+          params:
+            blue: 0
+            green: 1
+            red: 0
+    3:
+      id: core_3
+      type: ActiveHinge
+      orientation: 90
+      params:
+        blue: 0
+        green: 1
+        red: 0
+      children:
+        1:
+          id: core_3_1
+          type: ActiveHinge
+          orientation: 90
+          params:
+            blue: 0
+            green: 1
+            red: 0
+brain:
+  controller:
+    abs_output_bound: 1.0
+    init_neuron_state: 0.7071067811865476
+    load_brain: null
+    output_directory: null
+    output_signal_factor: 1.0
+    range_lb: null
+    range_ub: 1.0
+    reset_neuron_random: false
+    reset_neuron_state_bool: null
+    reset_robot_position: null
+    run_analytics: null
+    startup_time: null
+    use_frame_of_reference: true
+    verbose: null
+    weights:
+    - -0.007912923069670896
+    - -0.6684338163584473
+    - 1.313128863507882
+    - 1.9736497567966584
+    - 2.634170650085435
+    - 0.8551725489553064
+    - 1.0577371276915075
+    - 0.4500433914829047
+    - 0.2474788127467037
+    - -0.5053914102725687
+    - 0.9870440513361247
+    - 0.6466619280166924
+    - 0.33246920024976134
+    - 1.8106073507107798
+    - 2.3080858379136777
+    - 0.9727467401884498
+    - 0.6585540124215188
+    - 2.4711282439995563
+    - 1.0122689128387719
+    - 0.5409798211883754
+    - 0.29294702759943914
+  type: cpg-target

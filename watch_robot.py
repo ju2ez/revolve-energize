@@ -51,7 +51,8 @@ async def run():
     # initialization finished
 
     # load robot file
-    path = "experiments/EC_students/data/follow_line/1/data_fullevolution/phenotypes/phenotype_17334.yaml"
+    #path = "experiments/EC_students/data/follow_line/1/data_fullevolution/phenotypes/phenotype_17334.yaml"
+    path = "phenotype_5936.yaml"
     #4185, 13341, 15628, 17334, 24372
 
     robot = RevolveBot(_id=settings.test_robot)

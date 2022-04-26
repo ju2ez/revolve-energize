@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 from matplotlib import cm
 from mpl_toolkits.mplot3d import Axes3D
 from pyrevolve.custom_logging.logger import logger
-
 from pyrevolve.evolution.individual import Individual
 
 
@@ -21,7 +20,10 @@ def NSGA2(population_individuals: List[Individual], offspring: List[Individual])
     all_individuals.extend(offspring)
     for index, individual in enumerate(all_individuals):
         # Negative fitness due to minimum search, TODO can be changed to be a default maximization NSGA.
-        objectives[index, :] = [inf if objective is None else -objective for objective in individual.fitness]
+        if individual.fitness is not None:
+            objectives[index, :] = [inf if objective is None else -objective for objective in individual.fitness]
+        else:
+            objectives[index, :] = [inf, inf]
     # Perform the NSGA Algorithm
     front_no, max_front = nd_sort(objectives, np.inf)
     crowd_dis = crowding_distance(objectives, front_no)

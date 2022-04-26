@@ -1,10 +1,10 @@
- #!/bin/bash
+#!/bin/bash
 
  
 while true
 	do
-         for i in {1..1}; do
-                ./revolve.py --experiment-name follow_line --run $i --manager experiments/EC_students/manager_learning.py --n-cores 4 --port-start 11000  --evaluation-time 99;
+         for i in {1..30}; do
+                ./revolve.py --experiment-name nsga_2_big_500 --run $i --manager experiments/EC_students/manager_population_cppn.py --n-cores 60 --port-start 11000 --evaluation-time 50;
                 sleep 5s
 	   done
 done
